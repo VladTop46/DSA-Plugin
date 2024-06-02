@@ -1,0 +1,6 @@
+main: ru.vladtop46.dsa.Main
+name: DSAPlugin
+version: 0.1.0
+prefix: AlphaTest
+
+commands:

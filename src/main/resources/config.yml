@@ -1,0 +1,4 @@
+discord:
+  token: "YOUR_DISCORD_BOT_TOKEN" # Токен Discord бота
+  guild_id: "YOUR_DISCORD_GUILD_ID" # ID вашего Discord сервера
+  admin_channel_id: "YOUR_ADMIN_CHANNEL_ID" # ID канала с административными возможностями

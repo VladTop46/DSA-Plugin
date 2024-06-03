@@ -10,9 +10,9 @@ import org.bukkit.plugin.Plugin;
 
 public class LogUtil {
     private static LogUtil instance;
-    private Plugin plugin;
+    private final Plugin plugin;
     private final Logger logger;
-    private ConsoleCommandSender console;
+    private final ConsoleCommandSender console;
 
     private static final Level defaultLogLevel = Level.INFO;
 

@@ -7,10 +7,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.vladtop46.dsa.discord.DiscordBot;
 import ru.vladtop46.dsa.handler.Events;
 import ru.vladtop46.dsa.util.BotUtil;
 import ru.vladtop46.dsa.util.LogUtil;
+
+import java.awt.*;
+import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
@@ -29,15 +34,25 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
         messageOnEnable();
         initializeDiscordBot();
-        botUtil.initUtil(plugin, jda);
+
+        String logChannelId = getConfig().getString("discord.log_channel_id");
+
+        botUtil.initUtil(plugin, jda, logChannelId);
         eventHandler.init(botUtil);
         Bukkit.getPluginManager().registerEvents(eventHandler, plugin);
+        botUtil.logMessage(":green_circle: Сервер был включён!", Color.GREEN);
     }
 
     @Override
     public void onDisable() {
         getLogger().info("DSA Disabled!");
         DiscordBot.shutdown();
+
+        botUtil.logMessage(":red_circle: Сервер был отключён!", Color.RED);
+
+        jda = null;
+        logger = null;
+        plugin = null;
     }
 
     private void messageOnEnable() {
@@ -70,6 +85,7 @@ public class Main extends JavaPlugin {
         String token = getConfig().getString("discord.token");
         String guildId = getConfig().getString("discord.guild_id");
         String adminChannelId = getConfig().getString("discord.admin_channel_id");
+        List<String> allowedRoles = getConfig().getStringList("discord.allowed_roles");
 
         if (token == null || token.isEmpty()) {
             logger.logError("Discord bot token is missing in config.yml. Disabling plugin.");
@@ -89,7 +105,7 @@ public class Main extends JavaPlugin {
             return;
         }
 
-        boolean initialized = createBot(token) && DiscordBot.initialize(jda, guildId, adminChannelId, plugin, logger);
+        boolean initialized = createBot(token) && DiscordBot.initialize(jda, guildId, adminChannelId, allowedRoles, plugin, logger);
         if (!initialized) {
             logger.logError("Failed to initialize Discord bot. Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);

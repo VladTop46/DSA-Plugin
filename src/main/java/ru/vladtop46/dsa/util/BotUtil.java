@@ -1,17 +1,24 @@
 package ru.vladtop46.dsa.util;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.plugin.Plugin;
+
+import java.awt.*;
+import java.time.Instant;
 
 public class BotUtil {
 
     private static Plugin plugin;
     private static JDA jda;
+    private static String logChannelId;
 
-    public void initUtil(Plugin plugin, JDA jda) {
+    public void initUtil(Plugin plugin, JDA jda, String logChannelId) {
         BotUtil.plugin = plugin;
         BotUtil.jda = jda;
+        BotUtil.logChannelId = logChannelId;
     }
 
     public void updateBotActivity() {
@@ -28,5 +35,17 @@ public class BotUtil {
             }
         });
         thread.start();
+    }
+
+    public void logMessage(String message, Color color) {
+        TextChannel channel = jda.getTextChannelById(logChannelId);
+        if (channel != null) {
+            EmbedBuilder embedBuilder = new EmbedBuilder()
+                    .setDescription(message)
+                    .setColor(color).setTimestamp(Instant.now());
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+        } else {
+            System.out.println("Log channel not found!");
+        }
     }
 }

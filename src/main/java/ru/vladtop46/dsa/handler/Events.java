@@ -1,5 +1,6 @@
 package ru.vladtop46.dsa.handler;
 
+import java.awt.Color;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -18,10 +19,12 @@ public class Events implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         botUtil.updateBotActivity();
+        botUtil.logMessage(":purple_circle: Игрок " + event.getPlayer().getName() + " зашел на сервер.", Color.MAGENTA);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         botUtil.updateBotActivity();
+        botUtil.logMessage(":purple_circle: Игрок " + event.getPlayer().getName() + " вышел с сервера." , Color.MAGENTA);
     }
 }

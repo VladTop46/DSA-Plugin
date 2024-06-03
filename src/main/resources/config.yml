@@ -2,3 +2,7 @@ discord:
   token: "YOUR_DISCORD_BOT_TOKEN" # Токен Discord бота
   guild_id: "YOUR_DISCORD_GUILD_ID" # ID вашего Discord сервера
   admin_channel_id: "YOUR_ADMIN_CHANNEL_ID" # ID канала с административными возможностями
+  allowed_roles:
+    - "ROLE_ID_1"
+    - "ROLE_ID_2"
+  log_channel_id: "YOUR_LOG_CHANNEL_ID" # ID канала для логов бота

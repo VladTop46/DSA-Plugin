@@ -21,14 +21,16 @@ public class DiscordBot extends ListenerAdapter {
     private static JDA jda;
     private static String guildId;
     private static String adminChannelId;
+    private static List<String> allowedRoles;
 
     private static Plugin plugin;
     private static LogUtil logger;
 
-    public static boolean initialize(JDA jda, String guildId, String adminChannelId, Plugin plugin, LogUtil logger) {
+    public static boolean initialize(JDA jda, String guildId, String adminChannelId, List<String> allowedRoles, Plugin plugin, LogUtil logger) {
         try {
             DiscordBot.guildId = guildId;
             DiscordBot.adminChannelId = adminChannelId;
+            DiscordBot.allowedRoles = allowedRoles;
             DiscordBot.plugin = plugin;
             DiscordBot.logger = logger;
 
@@ -88,6 +90,27 @@ public class DiscordBot extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        if (!event.getChannel().getId().equals(adminChannelId)) {
+            EmbedBuilder error = new EmbedBuilder()
+                    .setColor(Color.RED)
+                    .setTitle("Ошибка доступа")
+                    .setDescription("Вы не имеете доступа к выполнению этой команды в данном канале.");
+            event.replyEmbeds(error.build()).setEphemeral(true).queue();
+            return;
+        }
+
+        boolean hasRole = event.getMember().getRoles().stream()
+                .anyMatch(role -> allowedRoles.contains(role.getId()));
+
+        if (!hasRole) {
+            EmbedBuilder error = new EmbedBuilder()
+                    .setColor(Color.RED)
+                    .setTitle("Ошибка доступа")
+                    .setDescription("Вы не имеете необходимой роли для выполнения этой команды.");
+            event.replyEmbeds(error.build()).setEphemeral(true).queue();
+            return;
+        }
+
         String eventName = event.getName();
         switch (eventName) {
             case "execute":
@@ -95,6 +118,13 @@ public class DiscordBot extends ListenerAdapter {
                 break;
             case "list":
                 listSlashCommand(event);
+                break;
+            default:
+                EmbedBuilder error = new EmbedBuilder()
+                        .setColor(Color.RED)
+                        .setTitle("Ошибка")
+                        .setDescription("Неизвестная команда.");
+                event.replyEmbeds(error.build()).setEphemeral(true).queue();
                 break;
         }
     }

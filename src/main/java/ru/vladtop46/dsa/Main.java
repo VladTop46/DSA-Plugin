@@ -7,8 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.vladtop46.dsa.discord.DiscordBot;
 import ru.vladtop46.dsa.handler.Events;
 import ru.vladtop46.dsa.util.BotUtil;
